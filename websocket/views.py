@@ -37,7 +37,7 @@ def disconnect(request):
 def _send_to_connection(connection_id, data):
     gatewayapi = boto3.client(
         "apigatewaymanagementapi",
-        endpoint_url=" https://vasepb0rq1.execute-api.us-east-2.amazonaws.com/test/@connections",
+        endpoint_url="https://jniw3bbhhi.execute-api.us-east-2.amazonaws.com/test/@connections",
         region_name="us-east-2", aws_access_key_id="AKIA3HOOM6AGXFZYLJ5N", aws_secret_access_key="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")
 
     return gatewayapi.post_to_connection(ConnectionId=connection_id, Data=json.dumps(data).encode("utf-8"))
@@ -47,12 +47,14 @@ def _send_to_connection(connection_id, data):
 def send_message(request):
     body = _parse_body(request.body)
     text = ChatMessage.objects.create(
-        username=body["username"],
-        timestamp=body["timestamp"],
+        username=body["body"]["username"],
+        timestamp=body["body"]["timestamp"],
+        message=body["body"]["content"],
+
     )
     text.save()
     connections = Connection.objects.all()
-    data = {"message": [body], }
+    data = {"messages": [body], }
     for connection in connections:
         _send_to_connection(connection.connection_id, data)
 
