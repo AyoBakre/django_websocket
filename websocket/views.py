@@ -20,7 +20,7 @@ def connect(request):
     body = _parse_body(request.body)
     connection_id = body['connectionId']
     Connection.objects.create(connection_id=connection_id)
-    return JsonResponse({'message': 'connect successfully'}, status=200)
+    return JsonResponse({'message': 'connect successfully'}, status=200,safe=False)
 
 
 
@@ -30,7 +30,7 @@ def disconnect(request):
     connection_id = body['connectionId']
     Connection.objects.get(connection_id=connection_id).delete()
 
-    return JsonResponse({'message': 'disconnect successfully'}, status=200)
+    return JsonResponse({'message': 'disconnect successfully'}, status=200,safe=False)
 
 
 @csrf_exempt
@@ -66,11 +66,11 @@ def send_message(request):
 def recent_messages(request):
     body = _parse_body(request.body)
     connections = [i.connection_id for i in Connection.objects.all()]
-    message_list = [{'username':chat_message.username, 'message':chat_message.messages,
+    message_list = [{'username':chat_message.username, 'content':chat_message.messages,
                      'timestamp':chat_message.timestamp} for chat_message in ChatMessage.objects.all()]
     data = {'messages': message_list}
     for connection_id in connections:
         _send_to_connection(connection_id, data)
-    return JsonResponse({'message':'successfully sent'}, status=200)
+    return JsonResponse({'message':'successfully sent'}, status=200,safe=False)
 
 
