@@ -46,15 +46,18 @@ def _send_to_connection(connection_id, data):
 @csrf_exempt
 def send_message(request):
     body = _parse_body(request.body)
-    text = ChatMessage.objects.create(
-        username=body["body"]["username"],
-        timestamp=body["body"]["timestamp"],
-        message=body["body"]["content"],
-
-    )
-    text.save()
+    dict_body = dict(body)
+    username = dict_body['body']['username']
+    timestamp = dict_body['body']['timestamp']
+    content = dict_body['body']['content']
+    ChatMessage.objects.create(username=username, timestamp=timestamp, messages=content,)
     connections = Connection.objects.all()
-    data = {"messages": [body], }
+    messages = {
+        "username": username,
+        "timestamp": timestamp,
+        "messages": content
+    }
+    data = {"messages": [messages] }
     for connection in connections:
         _send_to_connection(connection.connection_id, data)
 
