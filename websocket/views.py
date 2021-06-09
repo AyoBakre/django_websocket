@@ -66,7 +66,7 @@ def send_message(request):
 def recent_messages(request):
     body = _parse_body(request.body)
     connections = [i.connection_id for i in Connection.objects.all()]
-    message_list = [{'username':chat_message.username, 'message':chat_message.message,
+    message_list = [{'username':chat_message.username, 'message':chat_message.messages,
                      'timestamp':chat_message.timestamp} for chat_message in ChatMessage.objects.all()]
     data = {'messages': message_list}
     for connection_id in connections:
