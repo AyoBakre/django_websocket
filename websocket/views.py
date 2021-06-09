@@ -61,7 +61,7 @@ def send_message(request):
     for connection in connections:
         _send_to_connection(connection.connection_id, data)
 
-    return JsonResponse({"message": "message sent successfully"}, status=200)
+    return JsonResponse({"message": "message sent successfully"}, status=200, safe=False)
 
 
 @csrf_exempt
