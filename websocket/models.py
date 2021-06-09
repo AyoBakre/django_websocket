@@ -1,4 +1,5 @@
 from django.db import models
+from .others import message_id
 
 
 class Connection(models.Model):
@@ -9,6 +10,10 @@ class Connection(models.Model):
 
 
 class ChatMessage(models.Model):
+    msg_id = models.IntegerField(default=message_id)
     username = models.CharField(max_length=50)
     messages = models.CharField(max_length=400)
     timestamp = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.username
