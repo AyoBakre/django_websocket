@@ -71,6 +71,6 @@ def recent_messages(request):
     data = {'messages': message_list}
     for connection_id in connections:
         _send_to_connection(connection_id, data)
-    return JsonResponse({'message':'successfully sent'}, status=200,safe=False)
+    return JsonResponse({'message': 'successfully sent'}, status=200, safe=False)
 
 
