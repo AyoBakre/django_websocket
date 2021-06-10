@@ -10,7 +10,7 @@ class Connection(models.Model):
 
 
 class ChatMessage(models.Model):
-    msg_id = models.IntegerField(default=message_id)
+    msg_id = models.IntegerField(default=message_id())
     username = models.CharField(max_length=50)
     messages = models.CharField(max_length=400)
     timestamp = models.CharField(max_length=100)
