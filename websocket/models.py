@@ -15,4 +15,4 @@ class ChatMessage(models.Model):
     timestamp = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.username
+        return self.username + "|" + " " + self.msg_id
