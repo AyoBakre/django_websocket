@@ -51,7 +51,7 @@ def send_message(request):
     timestamp = dict_body['body']['timestamp']
     content = dict_body['body']['content']
     mesg_id = message_id()
-    user_co = User.objects.filter(id=mesg_id).first()
+    user_co = User.objects.filter(username=username).first()
     if user_co is None:
         return JsonResponse({"message": "user doesn't exsit, message not sent"}, status=200, safe=False)
     ChatMessage.objects.create(username=username, timestamp=timestamp, messages=content, msg_id=mesg_id)
