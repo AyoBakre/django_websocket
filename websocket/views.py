@@ -53,6 +53,14 @@ def send_message(request):
     mesg_id = message_id()
     user_co = User.objects.filter(username=username.lower()).first()
     if user_co is None:
+        connections = Connection.objects.all()
+        messages = {
+            "error": "user doesn't exist"
+        }
+        data = {"messages": [messages]}
+        for connection in connections:
+            _send_to_connection(connection.connection_id, data)
+
         return JsonResponse({"message": "user doesn't exsit, message not sent"}, status=200, safe=False)
     ChatMessage.objects.create(username=username, timestamp=timestamp, messages=content, msg_id=mesg_id)
     connections = Connection.objects.all()
