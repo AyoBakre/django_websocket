@@ -3,6 +3,8 @@ from django.http import JsonResponse
 from .models import *
 from django.views.decorators.csrf import csrf_exempt
 import json
+from .others import message_id
+from django.contrib.auth.models import User
 
 
 @csrf_exempt
@@ -48,11 +50,16 @@ def send_message(request):
     username = dict_body['body']['username']
     timestamp = dict_body['body']['timestamp']
     content = dict_body['body']['content']
-    ChatMessage.objects.create(username=username, timestamp=timestamp, messages=content,)
+    mesg_id = message_id()
+    user_co = User.objects.filter(id=mesg_id).first()
+    if user_co is None:
+        return JsonResponse({"message": "user doesn't exsit, message not sent"}, status=200, safe=False)
+    ChatMessage.objects.create(username=username, timestamp=timestamp, messages=content, msg_id=mesg_id)
     connections = Connection.objects.all()
     messages = {
         "username": username,
         "timestamp": timestamp,
+        "message id": mesg_id,
         "messages": content
     }
     data = {"messages": [messages]}
@@ -66,11 +73,9 @@ def send_message(request):
 def recent_messages(request):
     body = _parse_body(request.body)
     connections = [i.connection_id for i in Connection.objects.all()]
-    message_list = [{'username':chat_message.username, 'content':chat_message.messages,
+    message_list = [{'username':chat_message.username, "message_id": chat_message.msg_id, 'content': chat_message.messages,
                      'timestamp':chat_message.timestamp} for chat_message in ChatMessage.objects.all()]
     data = {'messages': message_list}
     for connection_id in connections:
         _send_to_connection(connection_id, data)
     return JsonResponse({'message': 'successfully sent'}, status=200, safe=False)
-
-
